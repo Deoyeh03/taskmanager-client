@@ -1,65 +1,289 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Users,
+  Zap,
+  BarChart3,
+  CheckCircle2,
+  ArrowRight,
+  Github,
+  Twitter,
+  Layers
+} from "lucide-react";
+
+const fadeIn = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.6 }
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
+      {/* Navigation */}
+      <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg shadow-purple-500/20">
+              <Layers className="h-6 w-6 text-white" />
+            </div>
+            <span className="text-xl font-bold tracking-tight">TaskFlow</span>
+          </div>
+
+          <div className="hidden items-center gap-8 md:flex">
+            <Link href="#features" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">Features</Link>
+            <Link href="#pricing" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">Pricing</Link>
+            <Link href="#about" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">About</Link>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Link href="/auth/login" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">
+              Log in
+            </Link>
+            <Link
+              href="/auth/register"
+              className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-all hover:bg-zinc-200"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              Get Started
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </nav>
+
+      <main>
+        {/* Hero Section */}
+        <section className="relative overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32">
+          {/* Background Blobs */}
+          <div className="absolute top-0 -left-1/4 h-[500px] w-[500px] rounded-full bg-purple-600/20 blur-[120px]" />
+          <div className="absolute top-1/4 -right-1/4 h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[120px]" />
+
+          <div className="relative mx-auto max-w-7xl px-6">
+            <div className="grid items-center gap-12 lg:grid-cols-2">
+              <motion.div
+                initial="initial"
+                animate="animate"
+                variants={staggerContainer}
+                className="flex flex-col items-start gap-8"
+              >
+                <motion.div
+                  variants={fadeIn}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-purple-400"
+                >
+                  <span className="flex h-2 w-2 rounded-full bg-purple-500" />
+                  New: Real-time Team Analytics
+                </motion.div>
+
+                <motion.h1
+                  variants={fadeIn}
+                  className="text-5xl font-bold leading-[1.1] tracking-tight lg:text-7xl"
+                >
+                  Collaborate <br />
+                  <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                    Without Limits.
+                  </span>
+                </motion.h1>
+
+                <motion.p
+                  variants={fadeIn}
+                  className="max-w-lg text-lg text-zinc-400"
+                >
+                  The all-in-one workspace for teams to track, manage, and collaborate on tasks in real-time. Built for speed, scale, and performance.
+                </motion.p>
+
+                <motion.div
+                  variants={fadeIn}
+                  className="flex flex-wrap gap-4"
+                >
+                  <Link
+                    href="/auth/register"
+                    className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-4 font-semibold transition-transform hover:scale-105"
+                  >
+                    Start Free Trial
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <button className="rounded-full border border-white/10 bg-white/5 px-8 py-4 font-semibold backdrop-blur-sm transition-colors hover:bg-white/10">
+                    Watch Demo
+                  </button>
+                </motion.div>
+
+                <motion.div
+                  variants={fadeIn}
+                  className="flex items-center gap-6 pt-4"
+                >
+                  <div className="flex -space-x-3">
+                    {[1, 2, 3, 4].map(i => (
+                      <div key={i} className="h-10 w-10 rounded-full border-2 border-black bg-zinc-800" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-zinc-500">
+                    Trusted by <span className="text-white font-medium">10,000+</span> teams worldwide
+                  </p>
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="relative"
+              >
+                <div className="relative z-10 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/50 p-2 backdrop-blur-sm shadow-2xl">
+                  <Image
+                    src="/hero.png"
+                    alt="TaskFlow Dashboard"
+                    width={800}
+                    height={800}
+                    className="rounded-xl"
+                    priority
+                  />
+                </div>
+                {/* Visual accents */}
+                <div className="absolute -inset-0.5 z-0 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 blur-xl opacity-50" />
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section id="features" className="py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="mb-16 text-center">
+              <h2 className="mb-4 text-3xl font-bold lg:text-5xl">Everything you need to ship faster</h2>
+              <p className="mx-auto max-w-2xl text-zinc-400">
+                Stop juggling between multiple tools. TaskFlow combines your tasks, team communication, and project tracking in one place.
+              </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  title: "Real-time Collaboration",
+                  desc: "Work together in sync. Changes appear instantly across all devices without page refreshes.",
+                  icon: Users,
+                  color: "text-blue-400"
+                },
+                {
+                  title: "Blazing Fast Performance",
+                  desc: "Optimized for speed. Manage thousands of tasks with zero lag or performance drops.",
+                  icon: Zap,
+                  color: "text-amber-400"
+                },
+                {
+                  title: "Deep Analytics",
+                  desc: "Gain insights into team productivity, task completion rates, and project health.",
+                  icon: BarChart3,
+                  color: "text-purple-400"
+                },
+                {
+                  title: "Smart Automations",
+                  desc: "Automate repetitive tasks and workflows to focus on what actually matters.",
+                  icon: CheckCircle2,
+                  color: "text-emerald-400"
+                },
+                {
+                  title: "Secure by Design",
+                  desc: "Enterprise-grade security with end-to-end encryption and role-based access control.",
+                  icon: Layers,
+                  color: "text-rose-400"
+                },
+                {
+                  title: "Team Permissions",
+                  desc: "Granular control over who can view, edit, or manage specific tasks and projects.",
+                  icon: Users,
+                  color: "text-indigo-400"
+                }
+              ].map((feature, idx) => (
+                <motion.div
+                  key={idx}
+                  whileHover={{ y: -5 }}
+                  className="group rounded-2xl border border-white/5 bg-white/[0.02] p-8 transition-colors hover:bg-white/[0.05]"
+                >
+                  <div className={`mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 ${feature.color}`}>
+                    <feature.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="mb-3 text-xl font-bold">{feature.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed">{feature.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-900/40 to-blue-900/40 px-8 py-20 text-center border border-white/10 backdrop-blur-sm lg:py-32">
+              <div className="relative z-10 mx-auto max-w-3xl">
+                <h2 className="mb-6 text-4xl font-bold lg:text-6xl">
+                  Ready to transform your team workflow?
+                </h2>
+                <p className="mb-10 text-lg text-zinc-300">
+                  Join over 10,000 teams building the future of work. Start your 14-day free trial today.
+                </p>
+                <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                  <Link
+                    href="/auth/register"
+                    className="w-full rounded-full bg-white px-10 py-4 font-bold text-black transition-transform hover:scale-105 sm:w-auto"
+                  >
+                    Create Free Account
+                  </Link>
+                  <Link
+                    href="/auth/login"
+                    className="w-full rounded-full border border-white/10 bg-white/5 px-10 py-4 font-bold backdrop-blur-sm transition-colors hover:bg-white/10 sm:w-auto"
+                  >
+                    Log In
+                  </Link>
+                </div>
+              </div>
+
+              {/* Decorative elements */}
+              <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 h-64 w-64 rounded-full bg-purple-500/20 blur-3xl" />
+              <div className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 h-64 w-64 rounded-full bg-blue-500/20 blur-3xl" />
+            </div>
+          </div>
+        </section>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-white/5 py-12">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+            <div className="flex items-center gap-2">
+              <Layers className="h-6 w-6 text-purple-500" />
+              <span className="text-xl font-bold tracking-tight">TaskFlow</span>
+            </div>
+
+            <div className="flex gap-8 text-sm text-zinc-400">
+              <Link href="#" className="transition-colors hover:text-white">Privacy Policy</Link>
+              <Link href="#" className="transition-colors hover:text-white">Terms of Service</Link>
+              <Link href="#" className="transition-colors hover:text-white">Contact</Link>
+            </div>
+
+            <div className="flex gap-4">
+              <button className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 transition-colors hover:bg-zinc-800">
+                <Twitter className="h-4 w-4" />
+              </button>
+              <button className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 transition-colors hover:bg-zinc-800">
+                <Github className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+          <div className="mt-8 text-center text-xs text-zinc-600">
+            © 2025 TaskFlow Inc. All rights reserved.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
