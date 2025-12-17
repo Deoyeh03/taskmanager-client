@@ -55,7 +55,7 @@ export default function DashboardPage() {
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
     // Fetch Tasks
-    const { data: tasks, isLoading } = useQuery({
+    const { data: tasks, isLoading, refetch } = useQuery({
         queryKey: ["tasks"],
         queryFn: async () => {
             const response = await fetch(`${API_URL}/tasks`, { credentials: "include" });
@@ -100,6 +100,7 @@ export default function DashboardPage() {
         onSuccess: () => {
             setIsNewTaskOpen(false);
             toast.success("Task created");
+            refetch();
         },
     });
 
@@ -136,36 +137,42 @@ export default function DashboardPage() {
 
             {/* Statistics */}
             <div className="grid gap-4 md:grid-cols-3">
-                <Card className="glass-card">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Active Tasks</CardTitle>
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats.pending}</div>
-                        <p className="text-[10px] text-muted-foreground mt-1">Out of {stats.total} total tasks</p>
-                    </CardContent>
-                </Card>
-                <Card className="glass-card">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Urgent</CardTitle>
-                        <AlertCircle className="h-4 w-4 text-red-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-red-500">{urgentTasks?.length || 0}</div>
-                        <p className="text-[10px] text-muted-foreground mt-1 text-red-500/80">Require immediate attention</p>
-                    </CardContent>
-                </Card>
-                <Card className="glass-card">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">Completed</CardTitle>
-                        <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats.completed}</div>
-                        <p className="text-[10px] text-muted-foreground mt-1 text-green-500/80">Success rate: {stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}%</p>
-                    </CardContent>
-                </Card>
+                <Link href="/dashboard/tasks" className="block group">
+                    <Card className="glass-card hover:border-primary/50 transition-all">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-sm font-medium">Active Tasks</CardTitle>
+                            <CheckCircle2 className="h-4 w-4 text-primary" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold group-hover:text-primary transition-colors">{stats.pending}</div>
+                            <p className="text-[10px] text-muted-foreground mt-1">Out of {stats.total} total tasks</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+                <Link href="/dashboard/tasks" className="block group">
+                    <Card className="glass-card hover:border-red-500/50 transition-all">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-sm font-medium">Urgent</CardTitle>
+                            <AlertCircle className="h-4 w-4 text-red-500" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-red-500">{urgentTasks?.length || 0}</div>
+                            <p className="text-[10px] text-muted-foreground mt-1 text-red-500/80">Require immediate attention</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+                <Link href="/dashboard/tasks" className="block group">
+                    <Card className="glass-card hover:border-green-500/50 transition-all">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-sm font-medium">Completed</CardTitle>
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{stats.completed}</div>
+                            <p className="text-[10px] text-muted-foreground mt-1 text-green-500/80">Success rate: {stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}%</p>
+                        </CardContent>
+                    </Card>
+                </Link>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-7">
@@ -272,7 +279,10 @@ export default function DashboardPage() {
                 {selectedTask && (
                     <TaskDetailView
                         task={selectedTask}
-                        onUpdate={() => { }}
+                        onUpdate={() => {
+                            refetch();
+                            setSelectedTask(null); // Optional: close on update or keep open? User said it should lead to page or modal.
+                        }}
                     />
                 )}
             </Modal>

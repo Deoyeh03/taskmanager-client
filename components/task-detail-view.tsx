@@ -10,12 +10,34 @@ import { MessageSquare, Send } from "lucide-react"
 import { API_URL } from "@/utils/config"
 import { toast } from "sonner"
 import { motion, AnimatePresence } from "framer-motion"
+import { CheckCircle, Clock, PlayCircle, Eye } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 export function TaskDetailView({ task, onUpdate }: any) {
     const { user } = useAuth()
     const [comment, setComment] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [activeTab, setActiveTab] = useState<"comments" | "activity">("comments")
+
+    const handleStatusUpdate = async (newStatus: string) => {
+        setIsLoading(true)
+        try {
+            const res = await fetch(`${API_URL}/tasks/${task._id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: newStatus }),
+                credentials: "include"
+            })
+            if (!res.ok) throw new Error("Failed to update status")
+            toast.success(`Task moved to ${newStatus}`)
+            if (onUpdate) onUpdate()
+        } catch (err: any) {
+            toast.error(err.message)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     const handleAddComment = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -42,9 +64,44 @@ export function TaskDetailView({ task, onUpdate }: any) {
     return (
         <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
             <div className="space-y-2">
-                <h3 className="text-2xl font-bold">{task.title}</h3>
+                <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold">{task.title}</h3>
+                    <Badge variant="outline" className="glass capitalize">{task.status}</Badge>
+                </div>
                 <p className="text-muted-foreground">{task.description}</p>
             </div>
+
+            {/* Status Update Buttons */}
+            {(user?._id === task.assignedToId?._id || user?.id === task.assignedToId?._id || user?._id === task.creatorId?._id || user?.id === task.creatorId?._id) && (
+                <div className="space-y-3 p-4 glass rounded-xl border border-white/10">
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                        <Clock className="h-3 w-3" /> Update Status
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                        {[
+                            { id: "To Do", icon: Clock, color: "hover:bg-blue-500/20 hover:text-blue-400" },
+                            { id: "In Progress", icon: PlayCircle, color: "hover:bg-yellow-500/20 hover:text-yellow-400" },
+                            { id: "Review", icon: Eye, color: "hover:bg-purple-500/20 hover:text-purple-400" },
+                            { id: "Completed", icon: CheckCircle, color: "hover:bg-green-500/20 hover:text-green-400" }
+                        ].map((s) => (
+                            <Button
+                                key={s.id}
+                                variant={task.status === s.id ? "secondary" : "outline"}
+                                size="sm"
+                                onClick={() => handleStatusUpdate(s.id)}
+                                disabled={isLoading || task.status === s.id}
+                                className={cn(
+                                    "glass text-xs h-8 flex items-center gap-1.5 transition-all duration-300",
+                                    task.status === s.id ? "bg-primary/20 border-primary/50 text-primary" : s.color
+                                )}
+                            >
+                                <s.icon className="h-3 w-3" />
+                                {s.id}
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="flex border-b border-white/10">
                 <button
