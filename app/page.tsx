@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -11,9 +12,12 @@ import {
   ArrowRight,
   Github,
   Twitter,
-  Layers
+  Layers,
+  Play
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -30,6 +34,7 @@ const staggerContainer = {
 };
 
 export default function Home() {
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
   return (
     <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
       {/* Navigation */}
@@ -123,7 +128,11 @@ export default function Home() {
                     Start Free Trial
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                  <button className="rounded-full border border-white/10 bg-white/5 px-8 py-4 font-semibold backdrop-blur-sm transition-colors hover:bg-white/10">
+                  <button
+                    onClick={() => setIsDemoOpen(true)}
+                    className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-8 py-4 font-semibold backdrop-blur-sm transition-colors hover:bg-white/10"
+                  >
+                    <Play className="h-4 w-4 fill-current" />
                     Watch Demo
                   </button>
                 </motion.div>
@@ -305,6 +314,44 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <Modal
+        isOpen={isDemoOpen}
+        onClose={() => setIsDemoOpen(false)}
+        title="TaskManager Demo"
+        className="max-w-2xl bg-zinc-950/90 border-white/10"
+      >
+        <div className="aspect-video w-full rounded-xl overflow-hidden bg-zinc-900 border border-white/5 flex flex-col items-center justify-center relative group">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-blue-600/20 opacity-50" />
+
+          <div className="relative z-10 text-center p-8 space-y-4">
+            <div className="mx-auto w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 animate-pulse">
+              <Play className="h-8 w-8 text-primary fill-current" />
+            </div>
+            <h3 className="text-2xl font-bold">Demo Coming Soon!</h3>
+            <p className="text-zinc-400 max-w-sm mx-auto">
+              We're currently preparing a high-quality product walkthrough.
+              In the meantime, you can experience the full power of TaskManager by starting a free trial.
+            </p>
+            <div className="pt-4">
+              <Button
+                onClick={() => {
+                  setIsDemoOpen(false);
+                  window.location.href = "/auth/register";
+                }}
+                className="rounded-full px-8"
+              >
+                Sign Up Now
+              </Button>
+            </div>
+          </div>
+
+          {/* Subtle decoration */}
+          <div className="absolute bottom-4 right-4 opacity-20">
+            <Layers className="h-24 w-24 text-white" />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

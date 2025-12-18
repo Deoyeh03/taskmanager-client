@@ -18,6 +18,7 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
     const [users, setUsers] = useState<UserItem[]>([])
     const [isOpen, setIsOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -26,17 +27,26 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
                 return
             }
             setIsLoading(true)
+            setError(null)
             try {
                 const res = await fetch(`${API_URL}/users/search?query=${query}`, {
                     credentials: "include"
                 })
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        throw new Error("Unauthorized - Please log in again")
+                    }
+                    throw new Error("Failed to fetch users")
+                }
                 const json = await res.json()
                 if (json.status === "success") {
                     const filtered = json.data.users.filter((u: UserItem) => (u._id || u.id) !== excludeUserId);
                     setUsers(filtered)
                 }
-            } catch (err) {
-                console.error(err)
+            } catch (err: any) {
+                console.error("Search error:", err)
+                setError(err.message)
+                setUsers([])
             } finally {
                 setIsLoading(false)
             }
@@ -74,6 +84,8 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
                     >
                         {isLoading ? (
                             <div className="p-4 text-center text-sm text-muted-foreground">Searching...</div>
+                        ) : error ? (
+                            <div className="p-4 text-center text-sm text-red-500 font-medium">{error}</div>
                         ) : (
                             <div className="max-height-[200px] overflow-y-auto">
                                 {users.map((user) => (
