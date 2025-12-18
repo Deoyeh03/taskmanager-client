@@ -10,12 +10,15 @@ import { API_URL } from "@/utils/config"
 import { toast } from "sonner"
 import { User, Camera } from "lucide-react"
 import { motion } from "framer-motion"
+import { AvatarSelector } from "@/components/avatar-selector"
+import { Modal } from "@/components/ui/modal"
 
 export function ProfilePanel() {
     const { user, updateUser } = useAuth()
     const [bio, setBio] = useState(user?.bio || "")
     const [avatar, setAvatar] = useState(user?.avatar || "")
     const [isLoading, setIsLoading] = useState(false)
+    const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false)
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -38,6 +41,14 @@ export function ProfilePanel() {
         }
     }
 
+    const handleAvatarChange = (newAvatarUrl: string) => {
+        setAvatar(newAvatarUrl)
+        if (updateUser && user) {
+            updateUser({ ...user, avatar: newAvatarUrl })
+        }
+        setIsAvatarModalOpen(false)
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -53,7 +64,10 @@ export function ProfilePanel() {
                             <User className="h-10 w-10 text-primary/40" />
                         )}
                     </div>
-                    <button className="absolute bottom-0 right-0 p-1.5 bg-primary rounded-full text-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                        onClick={() => setIsAvatarModalOpen(true)}
+                        className="absolute bottom-0 right-0 p-1.5 bg-primary rounded-full text-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
                         <Camera className="h-3 w-3" />
                     </button>
                 </div>
@@ -86,6 +100,19 @@ export function ProfilePanel() {
                     {isLoading ? "Updating..." : "Save Changes"}
                 </Button>
             </form>
+
+            {/* Avatar Selector Modal */}
+            <Modal
+                isOpen={isAvatarModalOpen}
+                onClose={() => setIsAvatarModalOpen(false)}
+                title="Choose Your Avatar"
+                className="max-w-2xl"
+            >
+                <AvatarSelector
+                    currentAvatar={avatar}
+                    onAvatarChange={handleAvatarChange}
+                />
+            </Modal>
         </motion.div>
     )
 }
