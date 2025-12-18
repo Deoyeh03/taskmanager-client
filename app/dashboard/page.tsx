@@ -119,19 +119,21 @@ export default function DashboardPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight gradient-text">
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight gradient-text">
                         Welcome back, {user?.username || "there"}
                     </h2>
-                    <p className="text-muted-foreground">Here is what's happening with your projects today.</p>
+                    <p className="text-sm md:text-base text-muted-foreground font-medium">Here is what's happening with your projects today.</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <NotificationsDropdown />
-                    <ThemeToggle />
+                <div className="flex items-center gap-2 md:gap-3">
+                    <div className="hidden md:flex items-center gap-3">
+                        <NotificationsDropdown />
+                        <ThemeToggle />
+                    </div>
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => setIsProfileOpen(true)}
-                        className="rounded-full h-9 w-9 glass"
+                        className="rounded-full h-9 w-9 glass shrink-0"
                     >
                         {user?.avatar ? (
                             <img src={user.avatar} className="h-full w-full rounded-full object-cover" />
@@ -139,7 +141,7 @@ export default function DashboardPage() {
                             <User className="h-5 w-5" />
                         )}
                     </Button>
-                    <Button onClick={() => setIsNewTaskOpen(true)} className="shadow-lg shadow-primary/20">
+                    <Button onClick={() => setIsNewTaskOpen(true)} className="shadow-lg shadow-primary/20 whitespace-nowrap">
                         <Plus className="mr-2 h-4 w-4" /> Quick Task
                     </Button>
                 </div>

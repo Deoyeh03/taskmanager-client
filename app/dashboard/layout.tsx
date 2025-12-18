@@ -4,21 +4,28 @@ import React, { useEffect } from "react";
 
 import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, LayoutDashboard, CheckSquare } from "lucide-react";
+import { LogOut, User, LayoutDashboard, CheckSquare, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { user, logout, isLoading } = useAuth();
     const pathname = usePathname();
     const router = useRouter();
+    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
     React.useEffect(() => {
         if (!isLoading && !user) {
             router.push("/auth/login");
         }
     }, [user, isLoading, router]);
+
+    // Close sidebar on route change (mobile)
+    React.useEffect(() => {
+        setIsSidebarOpen(false);
+    }, [pathname]);
 
     if (isLoading) {
         return (
@@ -37,10 +44,45 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     return (
         <div className="min-h-screen bg-background flex flex-col md:flex-row">
+            {/* Mobile Header */}
+            <header className="md:hidden flex items-center justify-between p-4 border-b bg-card sticky top-0 z-50">
+                <Link href="/dashboard" className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-blue-600 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-5 w-5 text-white" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
+                    </div>
+                    <span className="text-xl font-bold tracking-tight text-primary">TaskMaster</span>
+                </Link>
+                <div className="flex items-center gap-2">
+                    <ThemeToggle />
+                    <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)}>
+                        <Menu className="h-6 w-6" />
+                    </Button>
+                </div>
+            </header>
+
+            {/* Sidebar Overlay (Mobile) */}
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 md:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-full md:w-64 border-r bg-card flex flex-col">
-                <div className="p-6 border-b">
-                    <h1 className="text-xl font-bold tracking-tight text-primary">TaskMaster</h1>
+            <aside className={cn(
+                "fixed inset-y-0 left-0 z-50 w-64 bg-card border-r flex flex-col transition-transform duration-300 transform md:relative md:translate-x-0",
+                isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            )}>
+                <div className="p-6 border-b flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-blue-600 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-5 w-5 text-white" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
+                        </div>
+                        <h1 className="text-xl font-bold tracking-tight text-primary">TaskMaster</h1>
+                    </div>
+                    <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsSidebarOpen(false)}>
+                        <X className="h-5 w-5" />
+                    </Button>
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2">
@@ -75,8 +117,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto max-h-screen">
-                <div className="p-6 md:p-8 max-w-7xl mx-auto">
+            <main className="flex-1 overflow-y-auto w-full">
+                <div className="p-4 md:p-8 max-w-7xl mx-auto">
                     {children}
                 </div>
             </main>
