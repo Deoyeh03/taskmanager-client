@@ -80,7 +80,7 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="absolute z-50 w-full mt-2 glass border border-white/10 rounded-md shadow-2xl overflow-hidden"
+                        className="absolute z-50 w-full mt-2 bg-card/95 backdrop-blur-md border-2 border-primary/20 rounded-md shadow-2xl overflow-hidden"
                     >
                         {isLoading ? (
                             <div className="p-4 text-center text-sm text-muted-foreground">Searching...</div>
@@ -98,7 +98,7 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
                                             setQuery(user.username)
                                             setIsOpen(false)
                                         }}
-                                        className="w-full flex items-center justify-between p-3 text-sm hover:bg-white/10 transition-colors text-left"
+                                        className="w-full flex items-center justify-between p-3 text-sm hover:bg-primary/10 transition-colors text-left border-b border-white/5 last:border-0"
                                     >
                                         <div className="flex items-center gap-2">
                                             <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">

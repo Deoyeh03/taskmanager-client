@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Layers } from "lucide-react";
+import { Lock, LockOpen } from "lucide-react";
+import { CursorFollower } from "@/components/cursor-follower";
 
 const loginSchema = z.object({
     email: z.string().email("Invalid email address"),
@@ -21,6 +22,7 @@ type LoginData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
     const { login, isLoading } = useAuth();
+    const [showPassword, setShowPassword] = React.useState(false);
 
     const form = useForm<LoginData>({
         resolver: zodResolver(loginSchema),
@@ -35,7 +37,8 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-background/50 px-4">
+        <div className="flex min-h-screen items-center justify-center bg-background/50 px-4 relative">
+            <CursorFollower />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5 -z-10" />
 
             <div className="w-full max-w-md space-y-8">
@@ -82,12 +85,21 @@ export default function LoginPage() {
                                         Forgot password?
                                     </Link>
                                 </div>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    {...form.register("password")}
-                                    className="bg-background/50"
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        {...form.register("password")}
+                                        className="bg-background/50 pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        {showPassword ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                                    </button>
+                                </div>
                                 {form.formState.errors.password && (
                                     <p className="text-xs text-destructive">{form.formState.errors.password.message}</p>
                                 )}

@@ -54,7 +54,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/auth/login" className="text-sm font-medium text-zinc-400 transition-colors hover:text-white">
+            <Link href="/auth/login" className="hidden md:block text-sm font-medium text-zinc-400 transition-colors hover:text-white">
               Log in
             </Link>
             <Link
@@ -319,36 +319,44 @@ export default function Home() {
         isOpen={isDemoOpen}
         onClose={() => setIsDemoOpen(false)}
         title="TaskManager Demo"
-        className="max-w-2xl bg-zinc-950/90 border-white/10"
+        className="max-w-4xl bg-zinc-950/90 border-white/10"
       >
-        <div className="aspect-video w-full rounded-xl overflow-hidden bg-zinc-900 border border-white/5 flex flex-col items-center justify-center relative group">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-blue-600/20 opacity-50" />
-
-          <div className="relative z-10 text-center p-8 space-y-4">
-            <div className="mx-auto w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 animate-pulse">
-              <Play className="h-8 w-8 text-primary fill-current" />
-            </div>
-            <h3 className="text-2xl font-bold">Demo Coming Soon!</h3>
-            <p className="text-zinc-400 max-w-sm mx-auto">
-              We're currently preparing a high-quality product walkthrough.
-              In the meantime, you can experience the full power of TaskManager by starting a free trial.
-            </p>
-            <div className="pt-4">
-              <Button
-                onClick={() => {
-                  setIsDemoOpen(false);
-                  window.location.href = "/auth/register";
-                }}
-                className="rounded-full px-8"
-              >
-                Sign Up Now
-              </Button>
-            </div>
+        <div className="space-y-4">
+          {/* 
+            TO CHANGE TO LOOM LATER:
+            1. Record your Loom video
+            2. Get the embed URL from Loom (Share → Embed)
+            3. Replace the YouTube URL below with:
+               https://www.loom.com/embed/YOUR_VIDEO_ID?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true
+          */}
+          <div className="aspect-video w-full rounded-xl overflow-hidden bg-zinc-900 border border-white/5">
+            <iframe
+              src="https://www.youtube.com/embed/3i1OB6wKYms"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            ></iframe>
           </div>
 
-          {/* Subtle decoration */}
-          <div className="absolute bottom-4 right-4 opacity-20">
-            <Layers className="h-24 w-24 text-white" />
+          {/* Demo Features List */}
+          <div className="grid grid-cols-2 gap-4 pt-4">
+            <div className="glass p-4 rounded-lg">
+              <h4 className="font-semibold mb-2 text-sm">✨ Real-time Collaboration</h4>
+              <p className="text-xs text-muted-foreground">Work together seamlessly with your team</p>
+            </div>
+            <div className="glass p-4 rounded-lg">
+              <h4 className="font-semibold mb-2 text-sm">📊 Task Analytics</h4>
+              <p className="text-xs text-muted-foreground">Track progress with visual insights</p>
+            </div>
+            <div className="glass p-4 rounded-lg">
+              <h4 className="font-semibold mb-2 text-sm">🔔 Smart Notifications</h4>
+              <p className="text-xs text-muted-foreground">Stay updated on important changes</p>
+            </div>
+            <div className="glass p-4 rounded-lg">
+              <h4 className="font-semibold mb-2 text-sm">🎨 Beautiful UI</h4>
+              <p className="text-xs text-muted-foreground">Modern design that's a joy to use</p>
+            </div>
           </div>
         </div>
       </Modal>

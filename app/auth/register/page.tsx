@@ -10,18 +10,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Layers } from "lucide-react";
+import { Lock, LockOpen } from "lucide-react";
+import { CursorFollower } from "@/components/cursor-follower";
 
 const registerSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Confirm password must be at least 6 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
 });
 
 type RegisterData = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
     const { register, isLoading } = useAuth();
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
     const form = useForm<RegisterData>({
         resolver: zodResolver(registerSchema),
@@ -29,6 +36,7 @@ export default function RegisterPage() {
             username: "",
             email: "",
             password: "",
+            confirmPassword: "",
         },
     });
 
@@ -37,7 +45,8 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-background/50 px-4">
+        <div className="flex min-h-screen items-center justify-center bg-background/50 px-4 relative">
+            <CursorFollower />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5 -z-10" />
 
             <div className="w-full max-w-md space-y-8">
@@ -88,14 +97,44 @@ export default function RegisterPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    {...form.register("password")}
-                                    className="bg-background/50"
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        {...form.register("password")}
+                                        className="bg-background/50 pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        {showPassword ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                                    </button>
+                                </div>
                                 {form.formState.errors.password && (
                                     <p className="text-xs text-destructive">{form.formState.errors.password.message}</p>
+                                )}
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="confirmPassword"
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        {...form.register("confirmPassword")}
+                                        className="bg-background/50 pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        {showConfirmPassword ? <LockOpen className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                                    </button>
+                                </div>
+                                {form.formState.errors.confirmPassword && (
+                                    <p className="text-xs text-destructive">{form.formState.errors.confirmPassword.message}</p>
                                 )}
                             </div>
                             <Button
