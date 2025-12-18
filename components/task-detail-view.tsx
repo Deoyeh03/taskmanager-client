@@ -14,7 +14,7 @@ import { CheckCircle, Clock, PlayCircle, Eye } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
-export function TaskDetailView({ task, onUpdate }: any) {
+export function TaskDetailView({ task, onUpdate }: { task: any, onUpdate?: () => void }) {
     const { user } = useAuth()
     const [comment, setComment] = useState("")
     const [isLoading, setIsLoading] = useState(false)
@@ -72,7 +72,7 @@ export function TaskDetailView({ task, onUpdate }: any) {
             </div>
 
             {/* Status Update Buttons */}
-            {(user?._id === task.assignedToId?._id || user?.id === task.assignedToId?._id || user?._id === task.creatorId?._id || user?.id === task.creatorId?._id) && (
+            {(user?._id === task.assignedToId?._id || user?.id === task.assignedToId?._id || user?.id === task.assignedToId || user?._id === task.creatorId?._id || user?.id === task.creatorId?._id) && (
                 <div className="space-y-3 p-4 glass rounded-xl border border-white/10">
                     <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                         <Clock className="h-3 w-3" /> Update Status
@@ -102,6 +102,40 @@ export function TaskDetailView({ task, onUpdate }: any) {
                     </div>
                 </div>
             )}
+
+            {/* Technical Details / Timeline */}
+            <div className="grid grid-cols-2 gap-4 p-4 glass rounded-xl border border-white/10">
+                <div className="space-y-1">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Assigned To</p>
+                    <div className="flex items-center gap-2">
+                        <Avatar className="h-6 w-6">
+                            <AvatarImage src={task.assignedToId?.avatar} />
+                            <AvatarFallback className="text-[10px]">{task.assignedToId?.username?.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <span className="text-xs font-medium">{task.assignedToId?.username || "Unassigned"}</span>
+                    </div>
+                </div>
+                <div className="space-y-1 text-right">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Created On</p>
+                    <p className="text-xs font-medium">{new Date(task.createdAt).toLocaleDateString()}</p>
+                </div>
+                <div className="space-y-1">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Submitted For Review</p>
+                    <p className="text-xs font-medium">
+                        {task.activity?.find((a: any) => a.details.includes("Review"))
+                            ? new Date(task.activity.find((a: any) => a.details.includes("Review")).createdAt).toLocaleDateString()
+                            : "---"}
+                    </p>
+                </div>
+                <div className="space-y-1 text-right">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Approved On</p>
+                    <p className="text-xs font-medium">
+                        {task.activity?.find((a: any) => a.details.includes("Completed"))
+                            ? new Date(task.activity.find((a: any) => a.details.includes("Completed")).createdAt).toLocaleDateString()
+                            : "---"}
+                    </p>
+                </div>
+            </div>
 
             <div className="flex border-b border-white/10">
                 <button

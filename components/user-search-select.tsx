@@ -8,6 +8,7 @@ import { User, Search, Check } from "lucide-react"
 
 interface UserItem {
     id: string;
+    _id?: string;
     username: string;
     email: string;
 }

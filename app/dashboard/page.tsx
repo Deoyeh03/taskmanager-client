@@ -33,7 +33,7 @@ interface Task {
     status: string;
     priority: string;
     dueDate?: string;
-    assignedToId?: { username: string; email: string };
+    assignedToId?: { _id: string; username: string; email: string; avatar?: string };
     creatorId?: { username: string };
     tags: string[];
     activity?: { type: string; details: string; userId: { username: string }; createdAt: string }[];
@@ -53,6 +53,7 @@ export default function DashboardPage() {
     const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const [filterType, setFilterType] = useState<"Active" | "Urgent" | "Completed" | null>(null);
 
     // Fetch Tasks
     const { data: tasks, isLoading, refetch } = useQuery({
@@ -84,6 +85,15 @@ export default function DashboardPage() {
             (t.activity || []).map(a => ({ ...a, taskTitle: t.title, taskId: t._id }))
         ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
     }, [tasks]);
+
+    // Filtered Summary Tasks
+    const filteredSummaryTasks = useMemo(() => {
+        if (!tasks || !filterType) return [];
+        if (filterType === "Active") return tasks.filter(t => t.status !== "Completed");
+        if (filterType === "Urgent") return tasks.filter(t => (t.priority === "Urgent" || t.priority === "High") && t.status !== "Completed");
+        if (filterType === "Completed") return tasks.filter(t => t.status === "Completed");
+        return [];
+    }, [tasks, filterType]);
 
     // Create Mutation
     const createMutation = useMutation({
@@ -137,8 +147,8 @@ export default function DashboardPage() {
 
             {/* Statistics */}
             <div className="grid gap-4 md:grid-cols-3">
-                <Link href="/dashboard/tasks" className="block group">
-                    <Card className="glass-card hover:border-primary/50 transition-all">
+                <button onClick={() => setFilterType("Active")} className="block text-left group">
+                    <Card className="glass-card hover:border-primary/50 transition-all cursor-pointer">
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-medium">Active Tasks</CardTitle>
                             <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -148,21 +158,21 @@ export default function DashboardPage() {
                             <p className="text-[10px] text-muted-foreground mt-1">Out of {stats.total} total tasks</p>
                         </CardContent>
                     </Card>
-                </Link>
-                <Link href="/dashboard/tasks" className="block group">
-                    <Card className="glass-card hover:border-red-500/50 transition-all">
+                </button>
+                <button onClick={() => setFilterType("Urgent")} className="block text-left group">
+                    <Card className="glass-card hover:border-red-500/50 transition-all cursor-pointer">
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-medium">Urgent</CardTitle>
                             <AlertCircle className="h-4 w-4 text-red-500" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-red-500">{urgentTasks?.length || 0}</div>
+                            <div className="text-2xl font-bold text-red-500">{tasks?.filter(t => (t.priority === "Urgent" || t.priority === "High") && t.status !== "Completed").length || 0}</div>
                             <p className="text-[10px] text-muted-foreground mt-1 text-red-500/80">Require immediate attention</p>
                         </CardContent>
                     </Card>
-                </Link>
-                <Link href="/dashboard/tasks" className="block group">
-                    <Card className="glass-card hover:border-green-500/50 transition-all">
+                </button>
+                <button onClick={() => setFilterType("Completed")} className="block text-left group">
+                    <Card className="glass-card hover:border-green-500/50 transition-all cursor-pointer">
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-medium">Completed</CardTitle>
                             <CheckCircle2 className="h-4 w-4 text-green-500" />
@@ -172,7 +182,7 @@ export default function DashboardPage() {
                             <p className="text-[10px] text-muted-foreground mt-1 text-green-500/80">Success rate: {stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0}%</p>
                         </CardContent>
                     </Card>
-                </Link>
+                </button>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-7">
@@ -258,6 +268,33 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
+            {/* Filtered Result Modal */}
+            <Modal
+                isOpen={!!filterType}
+                onClose={() => setFilterType(null)}
+                title={`${filterType} Tasks`}
+                className="max-w-xl"
+            >
+                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                    {filteredSummaryTasks.map(task => (
+                        <div
+                            key={task._id}
+                            onClick={() => { setSelectedTask(task); setFilterType(null); }}
+                            className="p-3 glass rounded-lg border border-white/5 hover:border-primary/30 transition-all cursor-pointer flex justify-between items-center group"
+                        >
+                            <div className="min-w-0 flex-1">
+                                <h4 className="font-semibold text-sm group-hover:text-primary transition-colors truncate">{task.title}</h4>
+                                <p className="text-xs text-muted-foreground truncate">{task.description}</p>
+                            </div>
+                            <Badge variant="outline" className="ml-4 shrink-0 glass text-xs capitalize">{task.status}</Badge>
+                        </div>
+                    ))}
+                    {filteredSummaryTasks.length === 0 && (
+                        <p className="text-center py-8 text-muted-foreground">No tasks found.</p>
+                    )}
+                </div>
+            </Modal>
+
             {/* Modals */}
             <CreateTaskModal
                 isOpen={isNewTaskOpen}
@@ -281,7 +318,7 @@ export default function DashboardPage() {
                         task={selectedTask}
                         onUpdate={() => {
                             refetch();
-                            setSelectedTask(null); // Optional: close on update or keep open? User said it should lead to page or modal.
+                            setSelectedTask(null);
                         }}
                     />
                 )}

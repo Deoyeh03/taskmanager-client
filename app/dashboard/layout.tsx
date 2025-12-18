@@ -1,15 +1,34 @@
 "use client";
 
+import React, { useEffect } from "react";
+
 import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, LayoutDashboard, CheckSquare } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const { user, logout } = useAuth();
+    const { user, logout, isLoading } = useAuth();
     const pathname = usePathname();
+    const router = useRouter();
+
+    React.useEffect(() => {
+        if (!isLoading && !user) {
+            router.push("/auth/login");
+        }
+    }, [user, isLoading, router]);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (!user) return null;
 
     const navItems = [
         { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
