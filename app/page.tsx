@@ -38,7 +38,7 @@ export default function Home() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 shadow-lg shadow-purple-500/20">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-6 w-6 text-white" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
             </div>
-            <span className="text-xl font-bold tracking-tight">TaskFlow</span>
+            <span className="text-xl font-bold tracking-tight">TaskManager</span>
           </div>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -64,6 +64,16 @@ export default function Home() {
       <main>
         {/* Hero Section */}
         <section className="relative overflow-hidden pt-32 pb-20 lg:pt-48 lg:pb-32">
+          {/* Mobile Background Blur (Hero Image) */}
+          <div className="absolute inset-0 z-0 lg:hidden opacity-20 pointer-events-none overflow-hidden">
+            <Image
+              src="/hero.png"
+              alt=""
+              fill
+              className="object-cover blur-[80px]"
+              priority
+            />
+          </div>
           {/* Background Blobs */}
           <div className="absolute top-0 -left-1/4 h-[500px] w-[500px] rounded-full bg-purple-600/20 blur-[120px]" />
           <div className="absolute top-1/4 -right-1/4 h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[120px]" />
@@ -122,8 +132,18 @@ export default function Home() {
                   className="flex items-center gap-6 pt-4"
                 >
                   <div className="flex -space-x-3">
-                    {[1, 2, 3, 4].map(i => (
-                      <div key={i} className="h-10 w-10 rounded-full border-2 border-black bg-zinc-800" />
+                    {[
+                      { color: "bg-blue-500", name: "JD" },
+                      { color: "bg-purple-500", name: "AS" },
+                      { color: "bg-emerald-500", name: "MK" },
+                      { color: "bg-orange-500", name: "TR" }
+                    ].map((user, i) => (
+                      <div key={i} className={cn(
+                        "h-10 w-10 rounded-full border-2 border-black flex items-center justify-center text-[10px] font-bold",
+                        user.color
+                      )}>
+                        {user.name}
+                      </div>
                     ))}
                   </div>
                   <p className="text-sm text-zinc-500">
@@ -136,12 +156,12 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative"
+                className="relative hidden lg:block"
               >
                 <div className="relative z-10 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/50 p-2 backdrop-blur-sm shadow-2xl">
                   <Image
                     src="/hero.png"
-                    alt="TaskFlow Dashboard"
+                    alt="TaskManager Dashboard"
                     width={800}
                     height={800}
                     className="rounded-xl"
@@ -161,7 +181,7 @@ export default function Home() {
             <div className="mb-16 text-center">
               <h2 className="mb-4 text-3xl font-bold lg:text-5xl">Everything you need to ship faster</h2>
               <p className="mx-auto max-w-2xl text-zinc-400">
-                Stop juggling between multiple tools. TaskFlow combines your tasks, team communication, and project tracking in one place.
+                Stop juggling between multiple tools. TaskManager combines your tasks, team communication, and project tracking in one place.
               </p>
             </div>
 
@@ -261,7 +281,7 @@ export default function Home() {
           <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
             <div className="flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-6 w-6 text-purple-500" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
-              <span className="text-xl font-bold tracking-tight">TaskFlow</span>
+              <span className="text-xl font-bold tracking-tight">TaskManager</span>
             </div>
 
             <div className="flex gap-8 text-sm text-zinc-400">
@@ -280,7 +300,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-8 text-center text-xs text-zinc-600">
-            © 2025 TaskFlow Inc. All rights reserved.
+            © 2025 TaskManager Inc. All rights reserved.
           </div>
         </div>
       </footer>

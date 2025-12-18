@@ -32,7 +32,7 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
                 })
                 const json = await res.json()
                 if (json.status === "success") {
-                    const filtered = json.data.users.filter((u: UserItem) => u.id !== excludeUserId);
+                    const filtered = json.data.users.filter((u: UserItem) => (u._id || u.id) !== excludeUserId);
                     setUsers(filtered)
                 }
             } catch (err) {
@@ -46,7 +46,7 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
         return () => clearTimeout(timer)
     }, [query])
 
-    const selectedUser = users.find(u => u.id === selectedUserId)
+    const selectedUser = users.find(u => (u._id || u.id) === selectedUserId)
 
     return (
         <div className="relative">
@@ -78,10 +78,11 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
                             <div className="max-height-[200px] overflow-y-auto">
                                 {users.map((user) => (
                                     <button
-                                        key={user.id}
+                                        key={user._id || user.id}
                                         type="button"
                                         onClick={() => {
-                                            onSelect(user.id)
+                                            const userId = user._id || user.id;
+                                            onSelect(userId)
                                             setQuery(user.username)
                                             setIsOpen(false)
                                         }}
@@ -96,7 +97,7 @@ export function UserSearchSelect({ onSelect, selectedUserId, excludeUserId }: an
                                                 <p className="text-xs text-muted-foreground">{user.email}</p>
                                             </div>
                                         </div>
-                                        {selectedUserId === user.id && <Check className="h-4 w-4 text-primary" />}
+                                        {(selectedUserId === user._id || selectedUserId === user.id) && <Check className="h-4 w-4 text-primary" />}
                                     </button>
                                 ))}
                             </div>

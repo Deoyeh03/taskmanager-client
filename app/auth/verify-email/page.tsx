@@ -64,7 +64,7 @@ function VerifyEmailContent() {
 
                 <CardDescription className="text-base px-4">
                     {status === "loading" && "Please wait while we confirm your email address."}
-                    {status === "success" && "Your email has been successfully verified. You now have full access to TaskFlow."}
+                    {status === "success" && "Your email has been successfully verified. You now have full access to TaskManager."}
                     {status === "error" && (message || "The verification link is invalid or has expired.")}
                 </CardDescription>
             </CardHeader>
@@ -93,7 +93,7 @@ export default function VerifyEmailPage() {
             <div className="w-full max-w-md space-y-8">
                 <div className="flex flex-col items-center justify-center text-center">
                     <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 shadow-lg shadow-primary/20">
-                        <Layers className="h-7 w-7 text-primary-foreground" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-7 w-7 text-primary-foreground" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
                     </div>
                 </div>
 
