@@ -213,10 +213,12 @@ export function AvatarSelector({ currentAvatar, onAvatarChange }: AvatarSelector
                         className="space-y-4"
                     >
                         {!uploadPreview ? (
-                            <label className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:border-primary/50 transition-colors glass">
-                                <Upload className="h-12 w-12 text-muted-foreground mb-4" />
-                                <p className="text-sm font-medium mb-1">Click to upload image</p>
-                                <p className="text-xs text-muted-foreground">PNG, JPG, WebP (max 2MB)</p>
+                            <label className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer hover:border-primary/50 transition-colors glass group">
+                                <div className="flex flex-col items-center">
+                                    <Upload className="h-16 w-16 text-primary mb-4 group-hover:scale-110 transition-transform" />
+                                    <p className="text-base font-semibold mb-2 text-primary">Click to upload image</p>
+                                    <p className="text-sm text-muted-foreground">PNG, JPG, WebP (max 2MB)</p>
+                                </div>
                                 <input
                                     type="file"
                                     accept="image/*"

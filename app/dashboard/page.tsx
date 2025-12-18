@@ -44,9 +44,11 @@ const createTaskSchema = z.object({
     title: z.string().min(1, "Title is required"),
     description: z.string().optional(),
     priority: z.enum(["Low", "Medium", "High", "Urgent"]),
+    importance: z.enum(["Low", "Medium", "High", "Critical"]).default("Medium"),
+    assignedToId: z.string().optional(),
 });
 
-type CreateTaskForm = z.infer<typeof createTaskSchema> & { assignedToId?: string };
+type CreateTaskForm = z.infer<typeof createTaskSchema>;
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -332,8 +334,14 @@ export default function DashboardPage() {
 function CreateTaskModal({ isOpen, onClose, onSubmit, isLoading }: any) {
     const { user } = useAuth();
     const form = useForm<CreateTaskForm>({
-        resolver: zodResolver(createTaskSchema),
-        defaultValues: { priority: "Medium" }
+        resolver: zodResolver(createTaskSchema) as any,
+        defaultValues: {
+            title: "",
+            description: "",
+            priority: "Medium",
+            importance: "Medium",
+            assignedToId: ""
+        }
     });
 
     const handleSubmit = async (data: CreateTaskForm) => {
@@ -346,11 +354,34 @@ function CreateTaskModal({ isOpen, onClose, onSubmit, isLoading }: any) {
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                 <div className="space-y-2">
                     <Label>Title</Label>
-                    <Input {...form.register("title")} placeholder="Task title" />
+                    <Input {...form.register("title")} placeholder="Task title" className="glass" />
                 </div>
                 <div className="space-y-2">
                     <Label>Description</Label>
-                    <Input {...form.register("description")} placeholder="Details..." />
+                    <Input {...form.register("description")} placeholder="Details..." className="glass" />
+                </div>
+                <div className="space-y-2">
+                    <Label>Importance</Label>
+                    <div className="flex gap-2">
+                        {["Low", "Medium", "High", "Critical"].map((level) => (
+                            <button
+                                key={level}
+                                type="button"
+                                onClick={() => form.setValue("importance", level as any)}
+                                className={cn(
+                                    "flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all border",
+                                    form.watch("importance") === level
+                                        ? level === "Critical" ? "bg-red-500/20 border-red-500 text-red-500"
+                                            : level === "High" ? "bg-orange-500/20 border-orange-500 text-orange-500"
+                                                : level === "Medium" ? "bg-yellow-500/20 border-yellow-500 text-yellow-500"
+                                                    : "bg-blue-500/20 border-blue-500 text-blue-500"
+                                        : "border-white/10 text-muted-foreground hover:border-white/20"
+                                )}
+                            >
+                                {level}
+                            </button>
+                        ))}
+                    </div>
                 </div>
                 <div className="space-y-2">
                     <Label>Assign To</Label>
@@ -360,9 +391,9 @@ function CreateTaskModal({ isOpen, onClose, onSubmit, isLoading }: any) {
                         excludeUserId={user?._id || user?.id}
                     />
                 </div>
-                <div className="flex justify-end space-x-2 pt-4">
-                    <Button variant="outline" type="button" onClick={onClose}>Cancel</Button>
-                    <Button type="submit" isLoading={isLoading}>Create Task</Button>
+                <div className="flex justify-end space-x-2 pt-4 border-t border-white/10">
+                    <Button variant="outline" type="button" onClick={onClose} className="glass">Cancel</Button>
+                    <Button type="submit" isLoading={isLoading} className="shadow-lg shadow-primary/20">Create Task</Button>
                 </div>
             </form>
         </Modal>

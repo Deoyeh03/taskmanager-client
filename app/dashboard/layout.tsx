@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 
 import { useAuth } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
-import { LogOut, User, LayoutDashboard, CheckSquare, Menu, X } from "lucide-react";
+import { LogOut, User, LayoutDashboard, CheckSquare, Menu, X, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const pathname = usePathname();
     const router = useRouter();
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+    const [isStandalone, setIsStandalone] = React.useState(false);
+
+    // Detect if app is running in standalone mode (PWA)
+    React.useEffect(() => {
+        const checkStandalone = () => {
+            const isStandalonePWA = window.matchMedia('(display-mode: standalone)').matches ||
+                (window.navigator as any).standalone ||
+                document.referrer.includes('android-app://');
+            setIsStandalone(isStandalonePWA);
+        };
+        checkStandalone();
+    }, []);
 
     React.useEffect(() => {
         if (!isLoading && !user) {
@@ -46,12 +58,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="min-h-screen bg-background flex flex-col md:flex-row">
             {/* Mobile Header */}
             <header className="md:hidden flex items-center justify-between p-4 border-b bg-card sticky top-0 z-50">
-                <Link href="/dashboard" className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-blue-600 shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-5 w-5 text-white" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
-                    </div>
-                    <span className="text-xl font-bold tracking-tight text-primary">TaskManager</span>
-                </Link>
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => router.back()}
+                        className="shrink-0"
+                    >
+                        <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                    <Link href="/dashboard" className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-blue-600 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-5 w-5 text-white" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg>
+                        </div>
+                        <span className="text-xl font-bold tracking-tight text-primary">TaskManager</span>
+                    </Link>
+                </div>
                 <div className="flex items-center gap-2">
                     <ThemeToggle />
                     <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(true)}>
