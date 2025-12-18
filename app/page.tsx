@@ -13,6 +13,7 @@ import {
   Twitter,
   Layers
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
