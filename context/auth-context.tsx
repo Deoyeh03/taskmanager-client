@@ -12,6 +12,7 @@ interface User {
     username: string;
     email: string;
     avatar?: string;
+    avatarType?: 'upload' | 'library';
     bio?: string;
 }
 
